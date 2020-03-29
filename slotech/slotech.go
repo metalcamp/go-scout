@@ -15,13 +15,15 @@ type jobItem struct {
 	PublishedAt   time.Time
 }
 
-var baseURL = "https://slo-tech.com"
+const domain string = "slo-tech.com"
+const baseURL = "https://" + domain
+const jobsURL = baseURL + "/delo"
 
 func Scrape() []jobItem {
 	jobs := []jobItem{}
 
 	c := colly.NewCollector(
-		colly.AllowedDomains("slo-tech.com"),
+		colly.AllowedDomains(domain),
 		colly.Async(true),
 	)
 
@@ -45,10 +47,9 @@ func Scrape() []jobItem {
 		fmt.Println("Visiting", r.URL)
 	})
 
-	c.Visit(baseURL + "/delo")
+	c.Visit(jobsURL)
 	c.Wait()
 
-	//fmt.Println(jobs)
 	return jobs
 }
 
