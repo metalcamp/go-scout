@@ -11,6 +11,7 @@ type jobItem struct {
 	Company       string
 	AdURL         string
 	SourceBaseUrl string
+	SourceName    string
 	CrawledAt     time.Time
 	PublishedAt   time.Time
 }
@@ -18,12 +19,13 @@ type jobItem struct {
 const domain string = "slo-tech.com"
 const baseURL = "https://" + domain
 const jobsURL = baseURL + "/delo"
+const sourceName = "SloTech"
 
 func Scrape() []jobItem {
 	jobs := []jobItem{}
 
 	c := colly.NewCollector(
-		colly.AllowedDomains(domain),
+		colly.AllowedDomains(domain, "wwww." + domain),
 		colly.Async(true),
 	)
 
@@ -34,6 +36,7 @@ func Scrape() []jobItem {
 		temp.Title = e.ChildText("td.name h3 a")
 		temp.Company = e.ChildText("td.company a")
 		temp.CrawledAt = time.Now()
+		temp.SourceName = sourceName
 		//temp.PublishedAt = time.Now().UTC.format((e.ChildAttr("td.last_msg time", 'datetime'))
 		jobs = append(jobs, temp)
 	})
@@ -52,4 +55,3 @@ func Scrape() []jobItem {
 
 	return jobs
 }
-
